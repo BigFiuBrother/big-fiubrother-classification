@@ -1,0 +1,4 @@
+include big_fiubrother_classification/config/*
+include big_fiubrother_classification/model/convert_facenet.py
+include big_fiubrother_classification/model/inception_resnet_v1.py
+include big_fiubrother_classification/model/prepare_models.sh

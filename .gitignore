@@ -1,0 +1,8 @@
+*.pyc
+output
+.idea
+dist
+build
+big_fiubrother_classification.egg-info
+big_fiubrother_classification/model/20170512-110547
+big_fiubrother_classification/model/20170512-110547_mvds
