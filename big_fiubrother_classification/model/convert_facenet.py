@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import tensorflow as tf
 import inception_resnet_v1 as network
 import os

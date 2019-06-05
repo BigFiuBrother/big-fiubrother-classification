@@ -5,7 +5,7 @@ with open("README.md", 'r') as f:
 
 setup(
     name='big-fiubrother-classification',
-    version='0.1.0',
+    version='0.1.2',
     description='Big Fiubrother Face Classification application',
     license="GPLv3",
     long_description=long_description,
@@ -15,6 +15,6 @@ setup(
     author_email='gabriel.gayoso@fi.uba.ar',
     packages=['big_fiubrother_classification'],
     url='https://github.com/BigFiuBrother/big-fiubrother-classification',
-    install_requires=['opencv-python', 'numpy', 'pyyaml', 'pickle', 'sklearn', 'tensorflow'],
+    install_requires=['opencv-python', 'numpy', 'pyyaml', 'sklearn', 'tensorflow'],
     include_package_data=True
 )
