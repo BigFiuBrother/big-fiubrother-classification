@@ -1,8 +1,6 @@
-from scipy import misc
-import tensorflow as tf
 import numpy as np
-import sys
 import os
+import cv2
 from mvnc import mvncapi as mvnc
 
 class FaceEmbedderMovidiusFacenet:
@@ -49,7 +47,8 @@ class FaceEmbedderMovidiusFacenet:
 
         img_list = []
         for image in image_paths:
-            img = misc.imread(os.path.expanduser(image), mode='RGB')
+            img = cv2.imread(os.path.expanduser(image))
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             prewhitened = self._prewhiten(img)
             img_list.append(prewhitened)
         images = np.stack(img_list)

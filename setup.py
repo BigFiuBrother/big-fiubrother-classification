@@ -5,7 +5,7 @@ with open("README.md", 'r') as f:
 
 setup(
     name='big-fiubrother-classification',
-    version='0.1.2',
+    version='0.1.4',
     description='Big Fiubrother Face Classification application',
     license="GPLv3",
     long_description=long_description,
