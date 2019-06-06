@@ -19,7 +19,7 @@ class FaceEmbedderMovidiusFacenet:
             quit()
 
         # Pick the first stick to run the network
-        self.device = mvnc.Device(devices[0])
+        self.device = mvnc.Device(devices[movidius_id])
 
         # Open the NCS
         self.device.OpenDevice()
