@@ -10,7 +10,8 @@ class SVClassifier:
         self.model = SVC(kernel='linear', probability=True)
         self.class_names = None
 
-    def train(self, train_image_array, class_names, labels_train):
+    def train(self, embeddings_file_path):
+        class_names, train_image_array, labels_train = load_images(embeddings_file_path)
         self.class_names = class_names
         self.model.fit(train_image_array, labels_train)
 
@@ -18,13 +19,13 @@ class SVClassifier:
         with open(output_filename, "wb") as f:
             pickle.dump(self, f)
 
-    def predict(self, test_image_array):
+    def predict(self, embedding):
 
-        predictions = self.model.predict_proba(test_image_array)
-        best_class_indices = np.argmax(predictions, axis=1)
-        best_class_probabilities = predictions[np.arange(len(best_class_indices)), best_class_indices]
+        predictions = self.model.predict_proba([embedding])
+        best_class_index = np.argmax(predictions, axis=1)[0]
+        best_class_probability = predictions[np.arange(1), best_class_index]
 
-        return best_class_indices, best_class_probabilities
+        return self.class_names[best_class_index], best_class_probability
 
     @staticmethod
     def load(save_file):
@@ -71,6 +72,7 @@ def load_images(embeddings_file):
 
     return class_names, images_array, labels
 
+
 if __name__ == '__main__':
 
     if len(sys.argv) < 4:
@@ -97,11 +99,9 @@ if __name__ == '__main__':
 
         if mode == "TRAIN":
 
-            class_names, train, labels_train = load_images(embeddings_file)
-
             # Train classifier
             classifier = SVClassifier()
-            classifier.train(train, class_names, labels_train)
+            classifier.train(embeddings_file)
 
             # Save trained classifier
             classifier.save(pickle_file)
@@ -114,12 +114,16 @@ if __name__ == '__main__':
             classifier = SVClassifier.load(pickle_file)
 
             # Test classifier
-            best_class_indices, best_class_probabilities = classifier.predict(test)
+            pred_class_index = []
+            for i in range(len(test)):
+                test_emb = test[i]
+                real_class = class_names[labels_test[i]]
 
-            for i in range(len(best_class_indices)):
-                print('%4d  Real: %s, Predicted: %s, Prob: %.3f' % (i, class_names[labels_test[i]], class_names[best_class_indices[i]], best_class_probabilities[i]))
+                pred_class, pred_prob = classifier.predict(test_emb)
+                pred_class_index.append(class_names.index(pred_class))
+                print('%4d  Real: %s, Predicted: %s, Prob: %.3f' % (i, real_class, pred_class, pred_prob))
 
-            accuracy = np.mean(np.equal(best_class_indices, labels_test))
+            accuracy = np.mean(np.equal(pred_class_index, labels_test))
             print('Accuracy: %.3f' % accuracy)
 
         else:

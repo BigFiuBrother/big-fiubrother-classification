@@ -39,7 +39,7 @@ if __name__ == '__main__':
         print("Length: " + str(len(image_paths)))
         for i in range(len(image_paths)):
             image_path = image_paths[i]
-            emb = face_embedder_object.get_embeddings([image_path])
+            emb = face_embedder_object.get_embedding(image_path)
 
             # Save embeddings to csv file in output folder
             filename = os.path.basename(image_path)

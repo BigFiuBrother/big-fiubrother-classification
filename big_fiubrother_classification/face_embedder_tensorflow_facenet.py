@@ -1,4 +1,4 @@
-from scipy import misc
+import cv2
 import tensorflow as tf
 from tensorflow.python.platform import gfile
 import numpy as np
@@ -75,30 +75,38 @@ class FaceEmbedderTensorflowFacenet:
                     ckpt_file = step_str.groups()[0]
         return meta_file, ckpt_file
 
-    def _prewhiten(self, x):
+    def _prewhiten_image(self, x):
         mean = np.mean(x)
         std = np.std(x)
         std_adj = np.maximum(std, 1.0 / np.sqrt(x.size))
         y = np.multiply(np.subtract(x, mean), 1 / std_adj)
         return y
 
-    def _preprocess(self, image_paths):
+    def _preprocess_image(self, img):
         img_list = []
-        for image in image_paths:
-            img = misc.imread(os.path.expanduser(image), mode='RGB')
-            prewhitened = self._prewhiten(img)
-            img_list.append(prewhitened)
+        prewhitened = self._prewhiten_image(img)
+        img_list.append(prewhitened)
         images = np.stack(img_list)
         return images
 
-    def get_embeddings(self, image_paths):
+    def _load_image(self, image_path):
 
-        #preprocess
-        images = self._preprocess(image_paths)
+        img = cv2.imread(os.path.expanduser(image_path))
+        return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    def get_embedding(self, image_path):
+
+        img = self._load_image(image_path)
+
+        return self.get_embedding_mem(img)
+
+    def get_embedding_mem(self, cv_image):
+
+        # preprocess
+        image = self._preprocess_image(cv_image)
 
         # Run forward pass to calculate embeddings
-        feed_dict = {self.images_tensor: images, self.train_phase_tensor: False}
+        feed_dict = {self.images_tensor: image, self.train_phase_tensor: False}
         result = self.tf_session.run(self.embeddings_tensor, feed_dict=feed_dict)
         return result[0]
-
 
